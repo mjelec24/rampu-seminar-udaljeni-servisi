@@ -7,10 +7,12 @@ class ProductsService {
   static const baseUrl = 'https://dummyjson.com/products';
 
   Future<List<Product>> getProducts() async {
-    final json = await sendRequest(http.get(Uri.parse('$baseUrl?limit=30')));
-    return (json['products'] as List)
-        .map((product) => Product.fromJson(product))
-        .toList();
+    final products = <Product>[];
+    for (final category in ['mens-shirts', 'mens-shoes', 'mens-watches']) {
+      final json = await sendRequest(http.get(Uri.parse('$baseUrl/category/$category')));
+      products.addAll((json['products'] as List).map((product) => Product.fromJson(product)));
+    }
+    return products;
   }
 
   Future<List<Product>> search(String query) async {
